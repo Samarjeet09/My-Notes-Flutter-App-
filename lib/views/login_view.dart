@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
+import 'package:notesapp/constants/routes.dart';
+
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
 
@@ -61,18 +63,18 @@ class _LoginViewState extends State<LoginView> {
                   password: pass,
                 );
                 if (!mounted) {
+                  //kuch error aarha tha toh to solve that google it
                   return;
-                } //kuch error aarha tha toh to solve that google it
+                }
                 Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/notes/', (route) => false);
+                    .pushNamedAndRemoveUntil(notesRoute, (route) => false);
               } on FirebaseAuthException catch (e) {
                 if (e.code == "user-not-found") {
-                  devtools.log("user-not-found");
+                  showLoginError(context, "User not Found");
                 } else if (e.code == 'wrong-password') {
-                  devtools.log("wrong-password");
+                  showLoginError(context, "wrong-password");
                 } else {
-                  devtools.log("SOMETHING ELSE");
-                  devtools.log(e.code.toString());
+                  showLoginError(context, e.code.toString());
                 }
               }
             },
@@ -81,11 +83,22 @@ class _LoginViewState extends State<LoginView> {
           TextButton(
               onPressed: () {
                 Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/register/', (route) => false);
+                    .pushNamedAndRemoveUntil(registerRoute, (route) => false);
               },
               child: const Text("Not Registered?\nRegister Here "))
         ],
       ),
     );
   }
+}
+
+Future<void> showLoginError(BuildContext context, String error) {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Error"),
+          content: Text(error),
+        );
+      });
 }
