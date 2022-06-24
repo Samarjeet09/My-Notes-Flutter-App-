@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
-
 import 'package:notesapp/constants/routes.dart';
+import 'package:notesapp/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -61,18 +60,27 @@ class _RegisterViewState extends State<RegisterView> {
               final pass = _pass.text;
               // initialzing the firebase--> ek package aur dala  'firebase_options.dart';
               try {
-                final userCredential = await FirebaseAuth.instance
-                    .createUserWithEmailAndPassword(
-                        email: email, password: pass);
-                devtools.log(userCredential.toString());
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                  email: email,
+                  password: pass,
+                );
+                await FirebaseAuth.instance.currentUser
+                    ?.sendEmailVerification();
+
+                if (!mounted) return;
+                Navigator.of(context).pushNamed(verifyEmailRoute);
               } on FirebaseAuthException catch (e) {
                 if (e.code == "weak-password") {
-                  devtools.log("weak password");
+                  await showErrorDialog(context, "weak password");
                 } else if (e.code == "email-already-in-use") {
-                  devtools.log("Email already in use");
+                  await showErrorDialog(context, "Email already in use");
                 } else if (e.code == 'invalid-email') {
-                  devtools.log("invalid email");
+                  await showErrorDialog(context, "invalid email");
+                } else {
+                  await showErrorDialog(context, e.code);
                 }
+              } catch (e) {
+                await showErrorDialog(context, e.toString());
               }
             },
             child: const Text("Register"),

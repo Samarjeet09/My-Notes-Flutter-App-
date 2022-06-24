@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
-
 import 'package:notesapp/constants/routes.dart';
+import '../utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -62,20 +61,36 @@ class _LoginViewState extends State<LoginView> {
                   email: email,
                   password: pass,
                 );
+                final user = FirebaseAuth.instance.currentUser;
                 if (!mounted) {
                   //kuch error aarha tha toh to solve that google it
+                  //we cant use yeh Navigator.of(context)
+                  // on async functions toh we have to check yeh conditon
                   return;
                 }
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(notesRoute, (route) => false);
+                if (user?.emailVerified ?? false) {
+                  //user email is verified
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    notesRoute,
+                    (route) => false,
+                  ); //go to main notes page
+                } else {
+                  //user email is not verified
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    verifyEmailRoute,
+                    (route) => false,
+                  ); //go to email verify wala page
+                }
               } on FirebaseAuthException catch (e) {
                 if (e.code == "user-not-found") {
-                  showLoginError(context, "User not Found");
+                  await showErrorDialog(context, "User not Found");
                 } else if (e.code == 'wrong-password') {
-                  showLoginError(context, "wrong-password");
+                  await showErrorDialog(context, "wrong-password");
                 } else {
-                  showLoginError(context, e.code.toString());
+                  await showErrorDialog(context, e.code.toString());
                 }
+              } catch (e) {
+                await showErrorDialog(context, e.toString());
               }
             },
             child: const Text("Login"),
@@ -90,15 +105,4 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
-}
-
-Future<void> showLoginError(BuildContext context, String error) {
-  return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Error"),
-          content: Text(error),
-        );
-      });
 }
