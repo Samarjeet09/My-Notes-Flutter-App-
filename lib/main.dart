@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:notesapp/views/login_view.dart';
+import 'package:notesapp/views/notes_view.dart';
 import 'package:notesapp/views/register_view.dart';
-
+import 'package:notesapp/views/verify_email_view.dart';
 import 'firebase_options.dart';
+import 'dart:developer' as devtools show log;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +21,7 @@ void main() {
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
+        '/notes/': (context) => const NotesView(),
       },
     ),
   );
@@ -39,15 +43,18 @@ class HomePage extends StatelessWidget {
         //yahan pei loading screen
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            //   final user = FirebaseAuth.instance.currentUser;
-            //   if (user?.emailVerified ?? false) {
-            //     print("You are a verified");
-            //     return const Text("Done");
-            //   } else {
-            //     print(user);
-            //     return const VerifyEmailView();
-            //   }
-            return const LoginView();
+            final user = FirebaseAuth.instance.currentUser;
+            if (user != null) {
+              if (user.emailVerified) {
+                devtools.log("Email is Verified");
+                return const NotesView();
+              } else {
+                return const VerifyEmailView();
+              }
+            } else {
+              return const LoginView();
+            }
+
           default:
             //basically agar laod na ho ya time le toh yeh display ho
             return const CircularProgressIndicator();
@@ -56,4 +63,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
