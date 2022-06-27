@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:notesapp/constants/routes.dart';
 import 'package:notesapp/services/auth/auth_service.dart';
 import 'package:notesapp/services/auth/firebase_exceptions.dart';
-import 'package:notesapp/utilities/show_error_dialog.dart';
+
+import '../utilities/dialogs/error_dialog.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
             try {
               await AuthService.firebase().sendEmailVerification();
             } on UserNotLoggedInAuthException {
-              showErrorDialog(context, "User is Not Logged in");
+              showErrorDialog(context: context, text: "User is Not Logged in");
             }
           },
           child: const Text("Send Email verification"),

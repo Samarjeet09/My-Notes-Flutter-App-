@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:notesapp/constants/routes.dart';
 import 'package:notesapp/services/auth/auth_service.dart';
 import 'package:notesapp/services/auth/firebase_exceptions.dart';
-import '../utilities/show_error_dialog.dart';
+
+import '../utilities/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -83,13 +84,25 @@ class _LoginViewState extends State<LoginView> {
                   ); //go to email verify wala page
                 }
               } on UserNotFoundAuthException {
-                await showErrorDialog(context, "User not Found");
+                await showErrorDialog(
+                  context: context,
+                  text: "User not Found",
+                );
               } on WrongPasswordAuthException {
-                await showErrorDialog(context, "wrong-password");
+                await showErrorDialog(
+                  context: context,
+                  text: "wrong-password",
+                );
               } on GenericAuthException {
-                await showErrorDialog(context, "Authentication Error");
+                await showErrorDialog(
+                  context: context,
+                  text: "Authentication Error",
+                );
               } catch (e) {
-                await showErrorDialog(context, e.toString());
+                await showErrorDialog(
+                  context: context,
+                  text: e.toString(),
+                );
               }
             },
             child: const Text("Login"),

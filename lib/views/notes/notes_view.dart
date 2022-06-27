@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:notesapp/constants/routes.dart';
 import 'package:notesapp/services/auth/auth_service.dart';
 import 'package:notesapp/services/crud/notes_service.dart';
+import 'package:notesapp/utilities/dialogs/log_out_dialog.dart';
+import 'package:notesapp/views/notes/notes_list_view.dart';
 import '../../enums/menu_action.dart';
 
 class NotesView extends StatefulWidget {
@@ -72,22 +74,14 @@ class _NotesViewState extends State<NotesView> {
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return const Text('Waiting for all Notes');
+                      return const Text('Waiting for all Notes'); 
                     case (ConnectionState.active):
                       if (snapshot.hasData) {
                         final allNotes = snapshot.data as List<DatabaseNote>;
-                        return ListView.builder(
-                          itemCount: allNotes.length,
-                          itemBuilder: (context, index) {
-                            final note = allNotes[index];
-                            return ListTile(
-                              title: Text(
-                                note.text,
-                                maxLines: 1,
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            );
+                        return NotesListView(
+                          notes: allNotes,
+                          onDeleteNote: (note) async {
+                            await _notesService.deleteNote(id: note.id); 
                           },
                         );
                       } else {
@@ -106,27 +100,4 @@ class _NotesViewState extends State<NotesView> {
       ),
     );
   }
-}
-
-Future<bool> showLogOutDialog(BuildContext context) {
-  return showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Sign Out"),
-          content: const Text("Are you sure you want to sign out"),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: const Text("Yes")),
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: const Text("No"))
-          ],
-        );
-      }).then((value) => value ?? false);
 }
