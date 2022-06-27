@@ -4,11 +4,14 @@ import 'package:flutter/cupertino.dart';
 @immutable
 class AuthUser {
   final bool isEmailVerified;
-  const AuthUser({required this.isEmailVerified});
+  final String? email;
+  const AuthUser({required this.email, required this.isEmailVerified});
   // we will use factory constructor jo already exsisting constructor sei
   //lekar new mei kaam karega
 
-  factory AuthUser.fromFirebase(User user) =>
-      AuthUser(isEmailVerified: user.emailVerified);
+  factory AuthUser.fromFirebase(User user) => AuthUser(
+        email: user.email,
+        isEmailVerified: user.emailVerified,
+      );
   //basically humnei firebase user ka copy apnei mei daal liya
 }
