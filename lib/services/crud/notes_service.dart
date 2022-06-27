@@ -11,7 +11,12 @@ class NotesService {
   //i.e ek hi instance hoga iss class ka
   static final NotesService _shared = NotesService._sharedInstance();
   //pvt constructor
-  NotesService._sharedInstance();
+  NotesService._sharedInstance() {
+    _notesStreamController =
+        StreamController<List<DatabaseNote>>.broadcast(onListen: () {
+      _notesStreamController.sink.add(_notes);
+    });
+  }
   factory NotesService() => _shared;
 
   Database? _db;
@@ -21,8 +26,7 @@ class NotesService {
   //  now we will make a stream controller
   //think of stream controller as a pipe and we are telling
   // ki iss pipe mei list of DatabaseNotes type ki chise hongi
-  final _notesStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
+  late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   //A streamController for all the notes
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
@@ -285,7 +289,8 @@ class DatabaseNote {
         isSyncedCloud = (map[isSyncedCloudColumn] as int) == 1 ? true : false;
 
   @override
-  String toString() => 'Note ,Id = $id ,UserId = $userId,sync=$isSyncedCloud';
+  String toString() =>
+      'Note ,Id = $id ,UserId = $userId,sync=$isSyncedCloud ,text = $text';
 
   @override
   bool operator ==(covariant DatabaseUser other) => id == other.id;
@@ -301,7 +306,7 @@ const idColumn = 'id';
 const emailColumn = 'email';
 const userIdColumn = 'user_id';
 const textColumn = 'text';
-const isSyncedCloudColumn = 'is_synxed_cloud';
+const isSyncedCloudColumn = 'is_synced_cloud';
 const createNotesTable = '''
         CREATE TABLE IF NOT EXISTS "note" (
         "id"	INTEGER NOT NULL,
