@@ -7,7 +7,10 @@ Future<bool> showDeleteDialog(BuildContext context) {
       title: "DELETE NOTE",
       content: "Are you sure you want to DELETE THIS ITEM",
       optionBuilder: () {
-        return {"YES": true, "NO": false};
+        return {
+          "NO": false,
+          "YES": true,
+        };
       }).then(
     (value) => value ?? false,
   );
