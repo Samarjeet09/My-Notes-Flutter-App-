@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notesapp/constants/bottom_bar_text.dart';
 import 'package:notesapp/constants/routes.dart';
 import 'package:notesapp/services/auth/auth_service.dart';
 import 'package:notesapp/utilities/dialogs/log_out_dialog.dart';
@@ -92,6 +93,17 @@ class _NotesViewState extends State<NotesView> {
               return const CircularProgressIndicator();
           }
         },
+      ),
+      bottomNavigationBar: const BottomAppBar(
+        elevation: 1,
+        child: Text(
+          bottomBarText,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.pink,
+            fontSize: 22,
+          ),
+        ),
       ),
     );
   }

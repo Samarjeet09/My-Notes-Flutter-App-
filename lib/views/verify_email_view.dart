@@ -3,6 +3,7 @@ import 'package:notesapp/constants/routes.dart';
 import 'package:notesapp/services/auth/auth_service.dart';
 import 'package:notesapp/services/auth/firebase_exceptions.dart';
 
+import '../constants/bottom_bar_text.dart';
 import '../utilities/dialogs/error_dialog.dart';
 
 class VerifyEmailView extends StatefulWidget {
@@ -41,8 +42,19 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 .pushNamedAndRemoveUntil(registerRoute, (route) => false);
           },
           child: const Text("Restart"),
-        )
+        ),
       ]),
+      bottomNavigationBar: const BottomAppBar(
+        elevation: 1,
+        child: Text(
+          bottomBarText,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.pink,
+            fontSize: 22,
+          ),
+        ),
+      ),
     );
   }
 }

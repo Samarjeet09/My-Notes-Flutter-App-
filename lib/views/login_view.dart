@@ -3,6 +3,7 @@ import 'package:notesapp/constants/routes.dart';
 import 'package:notesapp/services/auth/auth_service.dart';
 import 'package:notesapp/services/auth/firebase_exceptions.dart';
 
+import '../constants/bottom_bar_text.dart';
 import '../utilities/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -116,6 +117,17 @@ class _LoginViewState extends State<LoginView> {
               },
               child: const Text("Not Registered?\nRegister Here "))
         ],
+      ),
+      bottomNavigationBar: const BottomAppBar(
+        elevation: 1,
+        child: Text(
+          bottomBarText,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.pink,
+            fontSize: 22,
+          ),
+        ),
       ),
     );
   }

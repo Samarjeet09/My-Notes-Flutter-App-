@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notesapp/constants/bottom_bar_text.dart';
 import 'package:notesapp/constants/routes.dart';
 import 'package:notesapp/services/auth/auth_service.dart';
 import 'package:notesapp/services/auth/firebase_exceptions.dart';
@@ -102,6 +103,17 @@ class _RegisterViewState extends State<RegisterView> {
                   .pushNamedAndRemoveUntil(loginRoute, (route) => false),
               child: const Text('Login Instead'))
         ],
+      ),
+      bottomNavigationBar: const BottomAppBar(
+        elevation: 1,
+        child: Text(
+          bottomBarText,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.pink,
+            fontSize: 22,
+          ),
+        ),
       ),
     );
   }

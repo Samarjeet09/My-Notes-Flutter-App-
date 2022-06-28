@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.notesapp">
    <application
-        android:label="notesapp"
-        android:name="${applicationName}"
+        android:label="SamarjeetSingh_102103562_APK"
+        android:name="${SamarjeetSingh_102103562_APK}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

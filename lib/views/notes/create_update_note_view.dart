@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notesapp/constants/bottom_bar_text.dart';
 import 'package:notesapp/services/auth/auth_service.dart';
 import 'package:notesapp/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:notesapp/utilities/generics/get_arguments.dart';
@@ -102,7 +103,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
               if (text.isEmpty || _note == null) {
                 await cannotShareEmptyNoteDialog(context);
               } else {
-                Share.share(text); 
+                Share.share(text);
               }
             },
           )
@@ -114,14 +115,28 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               _setupTextControllerListener();
-              return TextField(
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  hintText: "Start Typing Your Note....",
+              return Scaffold(
+                body: TextField(
+                  controller: _textController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    hintText: "Start Typing Your Note....",
+                  ),
+                ),
+                bottomNavigationBar: const BottomAppBar(
+                  elevation: 1,
+                  child: Text(
+                    bottomBarText,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.pink,
+                      fontSize: 22,
+                    ),
+                  ),
                 ),
               );
+
             default:
               return const CircularProgressIndicator();
           }
