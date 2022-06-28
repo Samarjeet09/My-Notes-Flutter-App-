@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:notesapp/services/auth/auth_service.dart';
+import 'package:notesapp/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:notesapp/utilities/generics/get_arguments.dart';
 import 'package:notesapp/services/cloud/cloud_note.dart';
 
 import 'package:notesapp/services/cloud/firebase_cloud_storage.dart';
+import 'package:share_plus/share_plus.dart';
 
 class CreateUpdateNoteView extends StatefulWidget {
   const CreateUpdateNoteView({Key? key}) : super(key: key);
@@ -90,25 +92,41 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("New Note")),
-        body: FutureBuilder(
-          future: createOrGetExistingNote(context),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                _setupTextControllerListener();
-                return TextField(
-                  controller: _textController,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                    hintText: "Start Typing Your Note....",
-                  ),
-                );
-              default:
-                return const CircularProgressIndicator();
-            }
-          },
-        ));
+      appBar: AppBar(
+        title: const Text("New Note"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share_sharp),
+            onPressed: () async {
+              final text = _textController.text;
+              if (text.isEmpty || _note == null) {
+                await cannotShareEmptyNoteDialog(context);
+              } else {
+                Share.share(text); 
+              }
+            },
+          )
+        ],
+      ),
+      body: FutureBuilder(
+        future: createOrGetExistingNote(context),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              _setupTextControllerListener();
+              return TextField(
+                controller: _textController,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  hintText: "Start Typing Your Note....",
+                ),
+              );
+            default:
+              return const CircularProgressIndicator();
+          }
+        },
+      ),
+    );
   }
 }
